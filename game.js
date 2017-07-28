@@ -43,7 +43,7 @@ var gameOfLife = {
     var reset_btn = document.getElementById('reset_btn');
     reset_btn.addEventListener('click', e => {
       this.forEachCell(function (cell) {
-        var status = Math.round(Math.random())
+        var status = (Math.random() * 10) > 2
         cell.className = status ? 'dead' : 'alive';
         cell.dataset.status = status ? 'dead' : 'alive';
       })
@@ -177,6 +177,12 @@ var gameOfLife = {
   },
 
     handleFiles: function (event){
+
+        this.forEachCell(function (cell) {
+          cell.className = 'dead';
+          cell.dataset.status = 'dead';
+        })
+
         var reader = new FileReader();
         var file = event.target.files[0];
         reader.onload = function(event) {
