@@ -127,11 +127,11 @@ var gameOfLife = {
     var play_btn = document.getElementById('play_btn');
     play_btn.addEventListener('click', this.enableAutoPlay.bind(this));
     var ex1_btn = document.getElementById('ex1');
-    ex1_btn.addEventListener('click', () => gameOfLife.processLines(ex1));
+    ex1_btn.addEventListener('click', () => {window.scrollTo(0, 0); gameOfLife.processLines(ex1)});
     var ex2_btn = document.getElementById('ex2');
-    ex2_btn.addEventListener('click', () => gameOfLife.processLines(ex2));
+    ex2_btn.addEventListener('click', () => {window.scrollTo(0, 0); gameOfLife.processLines(ex2)});
     var ex3_btn = document.getElementById('ex3');
-    ex3_btn.addEventListener('click', () => gameOfLife.processLines(ex3));
+    ex3_btn.addEventListener('click', () => {window.scrollTo(0, 0); gameOfLife.processLines(ex3)});
 
     // once html elements are added to the page, attach events to them
     this.setupBoardEvents();
