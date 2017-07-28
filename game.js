@@ -274,7 +274,7 @@ var gameOfLife = {
     // automatically repeatedly every fixed time interval  
     if (!this.stepInterval) {
       // kick it off
-      this.stepInterval = setInterval(this.step.bind(this), Math.max(document.getElementById('speed').value, 100))
+      this.stepInterval = setInterval(this.step.bind(this), Math.max(document.getElementById('speed').value, 50))
     } else {
       // kill it
       clearInterval(this.stepInterval);
