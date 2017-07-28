@@ -1,3 +1,11 @@
+//function handleFiles (event){
+//    var reader = new FileReader();
+//    var file = event.target.files[0];
+//    reader.onload = function(event) {
+//  };
+//  reader.readAsText(file);
+//}
+
 var gameOfLife = {
   
   width: 12, 
@@ -168,6 +176,33 @@ var gameOfLife = {
       
   },
 
+    handleFiles: function (event){
+        var reader = new FileReader();
+        var file = event.target.files[0];
+        reader.onload = function(event) {
+            var lines = event.target.result.split('\n').slice(2, -1);
+            var cells = lines.map(x => x.split('').map(y => y === '.'? 'dead' : 'alive'));
+    //        console.log(lines);
+            var acornTable = [];
+                for (var i = 0; i < 12; i++){
+                    for (var j = 0; j < 12; j++){
+                        if(cells.length > i && cells[i].length > j){
+                            //means column is within bounds
+                            acornTable.push(cells[i][j]);
+                        } else {
+                            acornTable.push('dead');
+                        }
+                    }
+                }
+              gameOfLife.forEachCell((cell, i) => {
+                var status = acornTable[i];
+                cell.className = status;
+                cell.dataset.status = status;
+              })
+            };
+        reader.readAsText(file);
+    },
+    
   enableAutoPlay: function () {
     // Start Auto-Play by running the 'step' function
     // automatically repeatedly every fixed time interval  

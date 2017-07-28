@@ -19,7 +19,9 @@
     <button id='clear_btn' class='btn btn-info'>Clear</button>
   </div>
   <div id='container'>
-    <input type="file" id="input">
+    <!--input type="file" id="input" onchange="x => console.log('hello')"-->
+  <input type="file" id="input" onchange="gameOfLife.handleFiles(event)">
+
   </div>
   
   <br><br>
