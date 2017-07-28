@@ -8,8 +8,8 @@
 
 var gameOfLife = {
   
-  width: 12, 
-  height: 12, // width and height dimensions of the board
+  width: 100, 
+  height: 100, // width and height dimensions of the board
   stepInterval: null, // should be used to hold reference to an interval that is "playing" the game
 
   createAndShowBoard: function () {
@@ -22,7 +22,7 @@ var gameOfLife = {
     for (var h=0; h<this.height; h++) {
       tablehtml += "<tr id='row+" + h + "'>";
       for (var w=0; w<this.width; w++) {
-        tablehtml += "<td data-status='dead' id='" + w + "-" + h + "'></td>";
+        tablehtml += "<td data-status='dead' id='id-" + w + "-" + h + "'></td>";
       }
       tablehtml += "</tr>";
     }
@@ -104,37 +104,37 @@ var gameOfLife = {
 
   getNeighbors: function(i) {
     //toprow
-    if (i < 12) {
+    if (i < gameOfLife.width) {
       var toprow = []
     } else {
 
-      if (i % 12 == 0) {
-        var toprow = [i-12, i-11]
-      } else if (i % 12 == 11) {
-        var toprow = [i-13, i-12]
+      if (i % gameOfLife.width == 0) {
+        var toprow = [i-gameOfLife.width, i-gameOfLife.width+1]
+      } else if (i % gameOfLife.width == gameOfLife.width - 1) {
+        var toprow = [i-gameOfLife.width - 1, i-gameOfLife.width]
       } else {
-        var toprow = [i-13, i-12, i-11]
+        var toprow = [i-gameOfLife.width - 1, i-gameOfLife.width, i-gameOfLife.width + 1]
       }
     }
     //midrow
-    if (i % 12 == 0) {
+    if (i % gameOfLife.width == 0) {
       var midrow = [i + 1]
-    } else if (i % 12 == 11) {
+    } else if (i % gameOfLife.width == gameOfLife.width - 1) {
       var midrow = [i - 1]
     } else {
       var midrow = [i-1, i+1]
     }
     //botrow
-    if (i > (143 - 12)) {
+    if (i > (gameOfLife.width * gameOfLife.width - 1 - gameOfLife.width)) {
       var botrow = []
     } else {
 
-      if (i % 12 == 0) {
-        var botrow = [i+13, i+12]
-      } else if (i % 12 == 11) {
-        var botrow = [i+12, i+11]
+      if (i % gameOfLife.width == 0) {
+        var botrow = [i+gameOfLife.width + 1, i+gameOfLife.width]
+      } else if (i % gameOfLife.width == gameOfLife.width - 1) {
+        var botrow = [i+gameOfLife.width, i+gameOfLife.width - 1]
       } else {
-        var botrow = [i+13, i+12, i+11]
+        var botrow = [i+gameOfLife.width + 1, i+gameOfLife.width, i+gameOfLife.width - 1]
       }
       
     }
@@ -167,11 +167,11 @@ var gameOfLife = {
             default:
               newState.push('dead')
           }
-          this.forEachCell((cell, i) => {
-            var status = newState[i]
-            cell.className = status;
-            cell.dataset.status = status;
-          })
+    })
+    this.forEachCell((cell, i) => {
+      var status = newState[i]
+      cell.className = status;
+      cell.dataset.status = status;
     })
       
   },
@@ -182,23 +182,49 @@ var gameOfLife = {
         reader.onload = function(event) {
             var lines = event.target.result.split('\n').slice(2, -1);
             var cells = lines.map(x => x.split('').map(y => y === '.'? 'dead' : 'alive'));
-    //        console.log(lines);
-            var acornTable = [];
-                for (var i = 0; i < 12; i++){
-                    for (var j = 0; j < 12; j++){
-                        if(cells.length > i && cells[i].length > j){
-                            //means column is within bounds
-                            acornTable.push(cells[i][j]);
-                        } else {
-                            acornTable.push('dead');
-                        }
-                    }
-                }
-              gameOfLife.forEachCell((cell, i) => {
-                var status = acornTable[i];
-                cell.className = status;
-                cell.dataset.status = status;
-              })
+            // add buffer to center the inserted cells
+            var buffer = Math.max(Math.floor(gameOfLife.width / 2 - cells[0].length / 2),0);
+            for (var i = 0; i<cells.length; i++){ // rows
+              for (var j=0; j<cells[i].length; j++){ //cols
+                var status = cells[i][j];
+                var string = 'id-' + (buffer + j) + '-' + (buffer + i)
+                var el = document.getElementById(string)
+                // console.log(string, el)
+                el.className = status;
+                el.dataset.status = status;
+              }
+            }
+            // var tempcells = []
+            // // buffer top rows
+            // for (var c = 0; c < buffer; c++){
+            //   tempcells.push(Array(gameOfLife.width).fill('dead'))
+            // }
+            // // buffer sides and cells
+            // for (var c = 0; c < cells.length; c++){
+            //   var temprow = []
+            //   for (var b = 0; b < gameOfLife.width; b++){
+            //     b < buffer ? temprow.push('dead') : temprow.push(cells[c][b - buffer])
+            //   }
+            //   tempcells.push(temprow)
+            // }
+            // cells = tempcells
+            // //push all these to acorntable
+            // var acornTable = [];
+            // for (var i = 0; i < gameOfLife.width; i++){
+            //     for (var j = 0; j < gameOfLife.width; j++){
+            //         if(cells.length > i && cells[i].length > j){
+            //             //means column is within bounds
+            //             acornTable.push(cells[i][j]);
+            //         } else {
+            //             acornTable.push('dead');
+            //         }
+            //     }
+            // }
+            //   gameOfLife.forEachCell((cell, i) => {
+            //     var status = acornTable[i];
+            //     cell.className = status;
+            //     cell.dataset.status = status;
+            //   })
             };
         reader.readAsText(file);
     },
@@ -208,7 +234,7 @@ var gameOfLife = {
     // automatically repeatedly every fixed time interval  
     if (!this.stepInterval) {
       // kick it off
-      this.stepInterval = setInterval(this.step.bind(this), Number(prompt("how fast do you want it", 200)))
+      this.stepInterval = setInterval(this.step.bind(this), Math.max(document.getElementById('speed').value, 100))
     } else {
       // kill it
       clearInterval(this.stepInterval);
