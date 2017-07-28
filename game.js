@@ -1,11 +1,37 @@
-//function handleFiles (event){
-//    var reader = new FileReader();
-//    var file = event.target.files[0];
-//    reader.onload = function(event) {
-//  };
-//  reader.readAsText(file);
-//}
-
+const ex1 = [
+".....O....."
+,"....O.O...."
+,"...O.O.O..."
+,"...O...O..."
+,"OO.O.O.O.OO"
+,"O.O.....O.O"
+,"...OOOOO..."
+,"..........."
+,".....O....."
+,"....O.O...."
+,".....O....."
+]
+const ex2 = [
+"OO........................OO",
+"OO........................OO",
+"..................OO........",
+".................O..O.......",
+"..................OO........",
+"..............O.............",
+".............O.O............",
+"............O...O...........",
+"............O..O............",
+"............................",
+"............O..O............",
+"...........O...O............",
+"............O.O.............",
+".............O..............",
+"........OO..................",
+".......O..O.................",
+"........OO..................",
+"OO........................OO",
+"OO........................OO"
+]
 var gameOfLife = {
   
   width: 100, 
@@ -52,6 +78,10 @@ var gameOfLife = {
     step_btn.addEventListener('click', this.step.bind(this));
     var play_btn = document.getElementById('play_btn');
     play_btn.addEventListener('click', this.enableAutoPlay.bind(this));
+    var ex1_btn = document.getElementById('ex1');
+    ex1_btn.addEventListener('click', () => gameOfLife.processLines(ex1));
+    var ex2_btn = document.getElementById('ex2');
+    ex2_btn.addEventListener('click', () => gameOfLife.processLines(ex2));
 
     // once html elements are added to the page, attach events to them
     this.setupBoardEvents();
@@ -161,6 +191,8 @@ var gameOfLife = {
           neighbors = neighbors.filter(x => oldState[x]==='alive')
           switch (neighbors.length){
             case 2:
+              newState.push(oldState[i])
+              break;
             case 3:
               newState.push('alive')
               break;
@@ -175,7 +207,21 @@ var gameOfLife = {
     })
       
   },
-
+    processLines: function(lines) {
+      var cells = lines.map(x => x.split('').map(y => y === '.'? 'dead' : 'alive'));
+            // add buffer to center the inserted cells
+      var buffer = Math.max(Math.floor(gameOfLife.width / 2 - cells[0].length / 2),0);
+      for (var i = 0; i<cells.length; i++){ // rows
+        for (var j=0; j<cells[i].length; j++){ //cols
+          var status = cells[i][j];
+          var string = 'id-' + (buffer + j) + '-' + (buffer + i)
+          var el = document.getElementById(string)
+          // console.log(string, el)
+          el.className = status;
+          el.dataset.status = status;
+        }
+      }
+    },
     handleFiles: function (event){
 
         this.forEachCell(function (cell) {
@@ -187,19 +233,7 @@ var gameOfLife = {
         var file = event.target.files[0];
         reader.onload = function(event) {
             var lines = event.target.result.split('\n').slice(2, -1);
-            var cells = lines.map(x => x.split('').map(y => y === '.'? 'dead' : 'alive'));
-            // add buffer to center the inserted cells
-            var buffer = Math.max(Math.floor(gameOfLife.width / 2 - cells[0].length / 2),0);
-            for (var i = 0; i<cells.length; i++){ // rows
-              for (var j=0; j<cells[i].length; j++){ //cols
-                var status = cells[i][j];
-                var string = 'id-' + (buffer + j) + '-' + (buffer + i)
-                var el = document.getElementById(string)
-                // console.log(string, el)
-                el.className = status;
-                el.dataset.status = status;
-              }
-            }
+            gameOfLife.processLines(lines);
             // var tempcells = []
             // // buffer top rows
             // for (var c = 0; c < buffer; c++){
