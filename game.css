@@ -23,8 +23,8 @@ h1, h2 {
 
 #board td{
   border: 1px solid #000;
-  width: 6px;
-  height: 6px;
+  width: 3px;
+  height: 3px;
 }
 
 #boarddiv {
